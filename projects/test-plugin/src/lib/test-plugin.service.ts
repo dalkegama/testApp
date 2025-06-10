@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
-import { PLUGIN_ACTIONS, PluginAction } from './test-plugin-action-token';
+import { PLUGIN_ACTIONS } from './test-plugin-action-token';
 
 @Injectable({
   providedIn: 'root'
