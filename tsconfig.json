@@ -16,7 +16,16 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "paths": {
+      "test-plugin": [
+        "./dist/test-plugin",
+        "./dist/test-plugin"
+      ],
+      "test-reboot": [
+        "./dist/test-reboot"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
