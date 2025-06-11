@@ -1,6 +1,5 @@
 import { Component, computed, inject, input, Signal, signal } from '@angular/core';
-import { TestRebootService } from './test-reboot.service';
-import { PluginAction, TestPluginService } from '../../../test-plugin/src/public-api';
+import { TestPluginService } from '../../../test-plugin/src/public-api';
 
 @Component({
   selector: 'lib-test-reboot',
