@@ -12,12 +12,7 @@ export interface LazyPluginAction {
   loadAction: (injector: Injector) => Promise<PluginAction>;
 }
 
-export const PLUGIN_ACTIONS = new InjectionToken<PluginAction[]>('PLUGIN_ACTIONS', {
-  providedIn: 'root',
-  factory: () => []
-});
-
-export const LAZY_PLUGIN_ACTIONS = new InjectionToken<LazyPluginAction[]>('LAZY_PLUGIN_ACTIONS', {
+export const PLUGIN_ACTIONS = new InjectionToken<LazyPluginAction[]>('PLUGIN_ACTIONS', {
   providedIn: 'root',
   factory: () => []
 });

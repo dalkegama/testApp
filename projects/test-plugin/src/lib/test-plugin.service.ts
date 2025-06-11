@@ -1,38 +1,29 @@
 import { computed, inject, Injectable, Signal, Injector, signal } from '@angular/core';
-import { PLUGIN_ACTIONS, LAZY_PLUGIN_ACTIONS, PluginAction } from './test-plugin-action-token';
+import { PLUGIN_ACTIONS, PluginAction, LazyPluginAction } from './test-plugin-action-token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TestPluginService {
   private readonly pluginActions = inject(PLUGIN_ACTIONS, { optional: false });
-  private readonly lazyPluginActions = inject(LAZY_PLUGIN_ACTIONS, { optional: false });
   private readonly injector = inject(Injector);
   private loadedActions = new Map<string, PluginAction>();
 
-  readonly actions = computed(() => [
-    ...this.pluginActions || [],
-    ...this.lazyPluginActions.map(lazy => ({
+  readonly actions = computed(() =>
+    this.pluginActions.map(lazy => ({
       key: lazy.key,
       label: lazy.label,
       execute: (assetId: string) => this.getOrCreateLazyActionSignal(lazy.key, assetId)
     }))
-  ]);
+  );
 
   hasAction(key: string): boolean {
     return this.actions().some(action => action.key === key);
   }
 
   executeAction(key: string, assetId: string): Signal<boolean> | null {
-    // Check if it's a regular action first
-    const action = this.pluginActions?.find(action => action.key === key);
-    if (action) {
-      console.log(`Executing plugin action: ${key} for asset: ${assetId}`);
-      return action.execute(assetId);
-    }
-
-    // Check if it's a lazy action
-    const lazyAction = this.lazyPluginActions.find(action => action.key === key);
+    // Find the lazy action
+    const lazyAction = this.pluginActions.find(action => action.key === key);
     if (lazyAction) {
       return this.getOrCreateLazyActionSignal(key, assetId);
     }
@@ -61,7 +52,7 @@ export class TestPluginService {
   private async loadLazyAction(key: string, assetId: string, loadingSignal: any): Promise<void> {
     try {
       // Find the lazy action
-      const lazyAction = this.lazyPluginActions.find(action => action.key === key);
+      const lazyAction = this.pluginActions.find(action => action.key === key);
       if (!lazyAction) {
         throw new Error(`Lazy plugin action "${key}" not found`);
       }
