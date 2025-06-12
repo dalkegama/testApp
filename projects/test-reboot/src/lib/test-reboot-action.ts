@@ -11,9 +11,9 @@ export function provideRebootAction(): Provider {
         label: 'Reboot Asset',
         loadAction: async (injector: Injector) => {
           // Dynamically import the action when needed
-          const { createRebootAction } = await import('./reboot-action-impl');
+          // const { createRebootAction } = await import('./reboot-action-impl');
           const rebootService = injector.get(TestRebootService);
-          return createRebootAction(rebootService);
+          return null;
         }
       };
     },
