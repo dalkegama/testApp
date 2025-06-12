@@ -29,6 +29,7 @@ export class TestPluginService {
 
   executeActionFromFactory(key: string, assetId: string): Signal<boolean> {
     const loadAction = this.actionLoaders.get(key);
+    // todo: action loader
     const resultSignal = signal(false);
 
     if (!loadAction) {

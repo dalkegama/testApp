@@ -9,6 +9,8 @@ export class ActionRegistration {
   }
 
   init(): void {
+
+    // Register action-loaders with the plugin service. Each key is registered with a function that returns an Observable<PluginAction>
     this.pluginService.registerActionLoader("reboot", () => {
       return from(import('../../projects/test-reboot/src/lib/reboot-action-impl')
         .then(m => this.injector.get(m.RebootAction)));
@@ -21,6 +23,7 @@ export class ActionRegistration {
       return from(import('../../projects/test-reboot/src/lib/take-control-action-impl')
         .then(m => this.injector.get(m.TakeControlAction)));
     });
+    // the same pattern to be repeated for each action since all of them implement PluginAction interface
   }
 
 }
