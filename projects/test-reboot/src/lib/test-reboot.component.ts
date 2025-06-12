@@ -33,7 +33,7 @@ export class TestRebootComponent {
   isRebooting = computed(() => this.rebootSignal()?.() ?? false);
 
   executeReboot(): void {
-    const signal = this.pluginManager.executeAction('reboot', this.assetId());
+    const signal = this.pluginManager.executeActionFromFactory('reboot', this.assetId());
     if (signal) {
       this.rebootSignal.set(signal);
     }

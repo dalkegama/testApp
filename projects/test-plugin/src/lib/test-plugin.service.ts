@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, Signal, Injector, signal } from '@angular/core';
 import { PLUGIN_ACTIONS, PluginAction, LazyPluginAction } from './test-plugin-action-token';
+import {map, catchError, Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ export class TestPluginService {
   private readonly pluginActions = inject(PLUGIN_ACTIONS, { optional: false });
   private readonly injector = inject(Injector);
   private loadedActions = new Map<string, PluginAction>();
+  private actionLoaders = new Map<string, () => Observable<PluginAction>>();
 
   readonly actions = computed(() =>
     this.pluginActions.map(lazy => ({
@@ -17,8 +19,36 @@ export class TestPluginService {
     }))
   );
 
+  registerActionLoader(key: string, loadAction: () => Observable<PluginAction>): void {
+    this.actionLoaders.set(key, loadAction);
+  }
+
   hasAction(key: string): boolean {
-    return this.actions().some(action => action.key === key);
+    return this.actionLoaders.has(key);
+  }
+
+  executeActionFromFactory(key: string, assetId: string): Signal<boolean> {
+    const loadAction = this.actionLoaders.get(key);
+    const resultSignal = signal(false);
+
+    if (!loadAction) {
+      console.error(`Action factory for "${key}" not found`);
+      resultSignal.set(false);
+      return resultSignal;
+    }
+
+    loadAction().subscribe({
+      next: action => {
+        console.log(`Executing action from factory: ${key} for asset: ${assetId}`);
+        resultSignal.set(action.execute(assetId)());
+      },
+      error: error => {
+        console.error(`Error executing action from factory ${key}:`, error);
+        resultSignal.set(false);
+      }
+    });
+
+    return resultSignal;
   }
 
   executeAction(key: string, assetId: string): Signal<boolean> | null {

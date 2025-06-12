@@ -3,9 +3,9 @@ import {PluginAction} from '../../../test-plugin/src/lib/test-plugin-action-toke
 import {Injectable, Signal} from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class RebootAction implements PluginAction {
-  readonly key = "reboot";
-  readonly label = "Reboot Asset";
+export class ManageTagsAction implements PluginAction {
+  readonly key = "manage-tags";
+  readonly label = "Manage Tags";
 
   constructor(private rebootService: TestRebootService) {}
 
